@@ -59,9 +59,17 @@ public class CameraEncorder extends VideoEncorder {
     }
 
     public void stop(){
-        mMediaCodec.stop();
-        mMediaCodec.release();
-        mMediaCodec = null;
+        if(mMediaCodec != null){
+            try{
+                mMediaCodec.stop();
+                mMediaCodec.release();
+                mMediaCodec = null;
+            }catch (IllegalStateException e){
+
+            }
+        }
+
+
     }
 
     public MediaCodec getMediaEncorder1(){

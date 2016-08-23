@@ -40,6 +40,10 @@ public class Session {
     private int TYPE_VIDEO_H264 = 1;
     private int TYPE_VIDEO_CAMERA = 2;
     private int TYPE_VIDEO_MP4_FILE = 3;
+
+
+
+    private Handler mediaProjectionHandler;
     //private int TYPE_AUDIO_ = ...
 
 
@@ -220,7 +224,13 @@ public class Session {
     public void setFileVideoQulity(VideoQuality fileVideoQulity) {
         this.fileVideoQulity = fileVideoQulity;
     }
+    public Handler getMediaProjectionHandler() {
+        return mediaProjectionHandler;
+    }
 
+    public void setMediaProjectionHandler(Handler handler) {
+        this.mediaProjectionHandler = handler;
+    }
     /**
      * Returns a Session Description that can be stored in a file or sent to a client with RTSP.
      * @return The Session Description.

@@ -58,7 +58,7 @@ import java.util.concurrent.TimeUnit;
 public class CameraManagerFragment extends Fragment
         implements FragmentCompat.OnRequestPermissionsResultCallback {
 
-    private boolean VERBOSE = false;
+    private boolean VERBOSE = true;
     private static volatile CameraManagerFragment cameraManagerFragment;
 
     public static CameraManagerFragment getInstance(){
@@ -510,6 +510,7 @@ public class CameraManagerFragment extends Fragment
     private void closeCamera() {
         if(VERBOSE)Log.v(TAG,"private void closeCamera()");
         try {
+            Log.v(TAG,"关闭了相机，获取了锁");
             mCameraOpenCloseLock.acquire();
             closePreviewSession();
             if (null != mCameraDevice) {
@@ -524,6 +525,7 @@ public class CameraManagerFragment extends Fragment
             throw new RuntimeException("Interrupted while trying to lock camera closing.");
         } finally {
             mCameraOpenCloseLock.release();
+            Log.v(TAG,"关闭了相机，并且释放了锁");
         }
     }
 
@@ -672,6 +674,9 @@ public class CameraManagerFragment extends Fragment
         try {
             //后台线程执行
             //将surface的list送入
+            if(mCameraDevice == null){
+                Log.e(TAG,"StartCreateData(): mCameraDevice == null");
+            }
             mCameraDevice.createCaptureSession(CaptureSessionInputSurfaces, new CameraCaptureSession.StateCallback() {
 
                 @Override

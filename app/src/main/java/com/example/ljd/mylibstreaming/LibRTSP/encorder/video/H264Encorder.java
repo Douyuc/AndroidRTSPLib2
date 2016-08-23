@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Surface;
 
 import com.example.ljd.mylibstreaming.LibRTSP.quality.VideoQuality;
+import com.example.ljd.mylibstreaming.LibRTSP.session.Session;
 
 import java.io.IOException;
 
@@ -28,11 +29,17 @@ public class H264Encorder extends VideoEncorder {
     private String mMimeType = "video/avc";
 
 
+
+    private Session session;
+
+
     public H264Encorder( VideoQuality mRequestedQuality, MediaProjection mMediaProjection ) {
         this.mRequestedQuality = mRequestedQuality;
         this.mMediaProjection = mMediaProjection;
     }
-
+    public void setSession(Session session) {
+        this.session = session;
+    }
     @Override
     public void encodeWithMediaCodec() throws RuntimeException {
 
@@ -63,15 +70,19 @@ public class H264Encorder extends VideoEncorder {
 
         mMediaProjection.createVirtualDisplay("屏幕捕捉", mRequestedQuality.getmWidth(), mRequestedQuality.getmHeight(),
                 mRequestedQuality.getmDensity(), DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
-                mSurface, null, null);
+                mSurface, null,null);
 
     }
 
     public void stop(){
-        if(mMediaCodec!=null){
-            mMediaCodec.stop();
-            mMediaCodec.release();
-            mMediaCodec = null;
+        if(mMediaCodec != null){
+            try{
+                mMediaCodec.stop();
+                mMediaCodec.release();
+                mMediaCodec = null;
+            }catch (IllegalStateException e){
+
+            }
         }
 
     }

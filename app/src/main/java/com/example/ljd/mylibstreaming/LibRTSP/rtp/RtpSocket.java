@@ -72,7 +72,7 @@ public class RtpSocket implements Runnable{
             mBuffers[i][0] = (byte) Integer.parseInt("10000000",2);
 
 			/* Payload Type */
-            mBuffers[i][1] = (byte) 96;
+            mBuffers[i][1] = (byte) 96;//96以上都不表示固定的格式。是动态格式。具体表示什么要用sdp协商或者其他协议来协商
 
 			/* Byte 2,3        ->  Sequence Number                   */
 			/* Byte 4,5,6,7    ->  Timestamp                         */
@@ -283,7 +283,7 @@ public class RtpSocket implements Runnable{
 
     /**
      * Computes an average bit rate.
-     * 计算网络拥塞情况，调整发送端帧率、码率
+     * 调整发送端帧率、码率
      **/
     protected static class AverageBitrate {
 

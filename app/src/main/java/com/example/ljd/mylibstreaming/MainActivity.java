@@ -13,7 +13,9 @@ import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -71,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
     private CameraManager mCameraManager;
     private CameraManagerFragment camera2VideoFragment;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,14 +85,16 @@ public class MainActivity extends AppCompatActivity {
 
         InitUI();
         UIListener();
+        myBindService();
+
         if (!RunState.getInstance().isRun()) {
             Log.v(TAG,"如果刚启动的话");
             AskForPermission();
             GetMediaInfo();
-            GetMediaInfo();
+            //GetMediaInfo();
             NewSession();
         }
-        myBindService();
+
     }
 
     private void InitUI(){
@@ -259,6 +265,7 @@ public class MainActivity extends AppCompatActivity {
         myStartService();
         mBinder.StartScreenCapture(session);//启动服务
     }
+
 
     @Override
     protected void onDestroy() {

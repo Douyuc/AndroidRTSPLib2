@@ -67,9 +67,9 @@ public class RtspServer extends Service {
     protected boolean mEnabled = true;
     protected int mPort = DEFAULT_RTSP_PORT;
 
-    protected WeakHashMap<MediaStream,Object> mMediaStreams = new WeakHashMap<MediaStream,Object>();
-    protected WeakHashMap<MediaCodec,Object> mMediaCodecs = new WeakHashMap<MediaCodec,Object>();
-    protected ArrayList<MediaExtractor> mediaExtractors = new ArrayList<MediaExtractor>();
+    protected WeakHashMap<MediaStream,MediaStream> mMediaStreams = new WeakHashMap<MediaStream,MediaStream>();
+    protected WeakHashMap<MediaCodec,MediaCodec> mMediaCodecs = new WeakHashMap<MediaCodec,MediaCodec>();
+    protected WeakHashMap<MediaExtractor,MediaExtractor> mediaExtractors = new WeakHashMap<MediaExtractor,MediaExtractor>();
     private RequestListener mListenerThread;
     private final IBinder mBinder = new LocalBinder();
     private boolean mRestart = false;
@@ -171,18 +171,18 @@ public class RtspServer extends Service {
             try {
                 if(VERBOSE) Log.v(TAG,"mListenerThread.kill()");
                 mListenerThread.kill();
-                for ( MediaStream mediaStream : mMediaStreams.keySet() ) {
+                for ( MediaStream mediaStream : mMediaStreams.values() ) {
                     if ( mediaStream != null ) {
                         if (mediaStream.isStreaming()) mediaStream.stop();
                     }
                 }
-                for ( MediaCodec mediaCodec : mMediaCodecs.keySet() ) {
+                for ( MediaCodec mediaCodec : mMediaCodecs.values() ) {
                     if ( mediaCodec != null ) {
                         mediaCodec.release();
                         mediaCodec.stop();
                     }
                 }
-                for(MediaExtractor mediaExtractor : mediaExtractors){
+                for(MediaExtractor mediaExtractor : mediaExtractors.values()){
                     if(mediaExtractor != null){
                         mediaExtractor.release();
                     }
@@ -197,7 +197,7 @@ public class RtspServer extends Service {
 
     /** Returns whether or not the RTSP server is streaming to some client(s). */
     public boolean isStreaming() {
-        for ( MediaStream mediaStream : mMediaStreams.keySet() ) {
+        for ( MediaStream mediaStream : mMediaStreams.values() ) {
             if ( mediaStream != null ) {
                 if (mediaStream.isStreaming()) return true;
             }
@@ -314,6 +314,7 @@ public class RtspServer extends Service {
             while (!Thread.interrupted()) {
                 try {
                     //可接收多个客户端
+                    //mServer.accept()会阻塞到这里直到有新的连接
                     new WorkerThread(mServer.accept()).start();
                     Log.v(TAG,"新的客户端连接");
                 } catch (SocketException e) {
@@ -418,6 +419,7 @@ public class RtspServer extends Service {
                 mediaEncorder.stop();
             }
 
+
 //            if (streaming && !isStreaming()) {
  //               postMessage(MESSAGE_STREAMING_STOPPED);
 //            }
@@ -453,46 +455,55 @@ public class RtspServer extends Service {
                     int sessionType = mSession.getSessionType();
                     if(sessionType == 1){
                         if(VERBOSE) Log.v(TAG,"sessionType == 1");
-                        mStreamFactory = VideoStreamFactory.getInstance();
-                        mEncorderFactory = VideoEncorderFactory.getInstance();
-                        //连接输入surface，准备好mediaCodec
-                        mediaEncorder = mEncorderFactory.CreateEncorder(mSession);
-                        mediaEncorder.encodeWithMediaCodec();
-                        mediaCodec = mediaEncorder.getMediaEncorder1();
-                        //传入mediaCodec，从输出buffer读数据
-                        mediaStream =  mStreamFactory.CreateStream(mediaCodec,null,mSession);
-                        mMediaCodecs.put(mediaCodec,mediaCodec);
-                        mMediaStreams.put(mediaStream,mediaStream);
+
+                            mStreamFactory = VideoStreamFactory.getInstance();
+                            mEncorderFactory = VideoEncorderFactory.getInstance();
+                            //连接输入surface，准备好mediaCodec
+                            mediaEncorder = mEncorderFactory.CreateEncorder(mSession);
+                            mediaEncorder.encodeWithMediaCodec();
+                            mediaCodec = mediaEncorder.getMediaEncorder1();
+                            //传入mediaCodec，从输出buffer读数据
+                            mediaStream =  mStreamFactory.CreateStream(mediaCodec,null,mSession);
+                            mMediaCodecs.put(mediaCodec,mediaCodec);
+                            mMediaStreams.put(mediaStream,mediaStream);
+
+
                     }
                     if(sessionType == 2){
                         if(VERBOSE) Log.v(TAG,"sessionType == 2");
-                        mStreamFactory = VideoStreamFactory.getInstance();
-                        mEncorderFactory = VideoEncorderFactory.getInstance();
-                        cameraManagerFragment = CameraManagerFragment.getInstance();
-                        //连接输入surface，准备好mediaCodec
-                        Size videoSize = cameraManagerFragment.getVideoSize();
-                        mSession.getVideoQuality().setmWidth(videoSize.getWidth());
-                        mSession.getVideoQuality().setmHeight(videoSize.getHeight());
-                        mediaEncorder = mEncorderFactory.CreateEncorder(mSession);
-                        mediaEncorder.encodeWithMediaCodec();
-                        mediaCodec = mediaEncorder.getMediaEncorder1();
-                        Surface surface = ((CameraEncorder)mediaEncorder).getSurface();
-                        cameraManagerFragment.SetMediaCodecInputSurface(surface);
-                        cameraManagerFragment.StartCreateData();
-                        //传入mediaCodec，从输出buffer读数据
-                        mediaStream =  mStreamFactory.CreateStream(mediaCodec,null,mSession);
-                        mMediaCodecs.put(mediaCodec,mediaCodec);
-                        mMediaStreams.put(mediaStream,mediaStream);
+
+                            mStreamFactory = VideoStreamFactory.getInstance();
+                            mEncorderFactory = VideoEncorderFactory.getInstance();
+                            cameraManagerFragment = CameraManagerFragment.getInstance();
+                            //连接输入surface，准备好mediaCodec
+                            Size videoSize = cameraManagerFragment.getVideoSize();
+                            mSession.getVideoQuality().setmWidth(videoSize.getWidth());
+                            mSession.getVideoQuality().setmHeight(videoSize.getHeight());
+                            mediaEncorder = mEncorderFactory.CreateEncorder(mSession);
+                            mediaEncorder.encodeWithMediaCodec();
+                            mediaCodec = mediaEncorder.getMediaEncorder1();
+                            Surface surface = ((CameraEncorder)mediaEncorder).getSurface();
+                            cameraManagerFragment.SetMediaCodecInputSurface(surface);
+                            cameraManagerFragment.StartCreateData();
+                            //传入mediaCodec，从输出buffer读数据
+                            mediaStream =  mStreamFactory.CreateStream(mediaCodec,null,mSession);
+                            mMediaCodecs.put(mediaCodec,mediaCodec);
+                            mMediaStreams.put(mediaStream,mediaStream);
+
                     }
                     if(sessionType == 3){
                         if(VERBOSE) Log.v(TAG,"sessionType == 3");
-                        mStreamFactory = VideoStreamFactory.getInstance();
-                        mEncorderFactory = VideoEncorderFactory.getInstance();
-                        mediaEncorder = mEncorderFactory.CreateEncorder(mSession);
-                        mediaExtractor = mediaEncorder.getMediaEncorder3();
-                        mediaStream =  mStreamFactory.CreateStream(null,mediaExtractor,mSession);
-                        mediaExtractors.add(mediaExtractor);
-                        mMediaStreams.put(mediaStream,mediaStream);
+
+
+                            mStreamFactory = VideoStreamFactory.getInstance();
+                            mEncorderFactory = VideoEncorderFactory.getInstance();
+                            mediaEncorder = mEncorderFactory.CreateEncorder(mSession);
+                            mediaExtractor = mediaEncorder.getMediaEncorder3();
+                            mediaStream =  mStreamFactory.CreateStream(null,mediaExtractor,mSession);
+                            mediaExtractors.put(mediaExtractor,mediaExtractor);
+                            mMediaStreams.put(mediaStream,mediaStream);
+
+
                     }
                     //mSessions.put(mSession, null);
                     mediaStream.configure(mSession);

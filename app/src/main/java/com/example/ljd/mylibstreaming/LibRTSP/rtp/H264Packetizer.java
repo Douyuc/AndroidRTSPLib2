@@ -12,7 +12,7 @@ import java.io.IOException;
  * Created by ljd-pc on 2016/6/22.
  */
 public class H264Packetizer extends AbstractPacketizer implements Runnable{
-    private boolean VERBOSE = true;
+    private boolean VERBOSE = false;
     public final static String TAG = "H264Packetizer";
 
     private Thread t = null;
@@ -129,6 +129,9 @@ public class H264Packetizer extends AbstractPacketizer implements Runnable{
                 fill(header, 0, 5);//从inputstream装字节到header中
                 //if(VERBOSE) Log.v(TAG,"header[4] = "+header[4]);
                 if(session.getSessionType() == 1) {
+                    ts = ((MediaCodecInputStream) is).getLastBufferInfo().presentationTimeUs * 1000L;
+                }
+                if(session.getSessionType() == 2) {
                     ts = ((MediaCodecInputStream) is).getLastBufferInfo().presentationTimeUs * 1000L;
                 }
                 if(session.getSessionType() == 3){
