@@ -40,15 +40,20 @@
 ![image](https://github.com/lijundacom/AndroidRTSPLib/blob/master/程序运行图.png)
 
 
+
 五、程序效果图
 
-(1)屏幕录制效果
+(1)屏幕直播效果
 
 ![image](https://github.com/lijundacom/AndroidRTSPLib/blob/master/screen.gif)
 
-(2)电影点播效果
+(2)本地MP4文件点播效果
 
 ![image](https://github.com/lijundacom/AndroidRTSPLib/blob/master/movie.gif)
+
+(3)摄像头直播效果
+
+![image](https://github.com/lijundacom/AndroidRTSPLib/blob/master/camera.gif)
 
 六、参考
 
