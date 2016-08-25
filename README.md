@@ -45,15 +45,16 @@
 
 (1)屏幕直播效果
 
-![image](https://github.com/lijundacom/AndroidRTSPLib/blob/master/screen.gif)
+![image](https://github.com/lijundacom/AndroidRTSPLib2/blob/master/screen.gif)
 
 (2)本地MP4文件点播效果
 
-![image](https://github.com/lijundacom/AndroidRTSPLib/blob/master/movie.gif)
+![image](https://github.com/lijundacom/AndroidRTSPLib2/blob/master/movie.gif)
 
 (3)摄像头直播效果
 
-![image](https://github.com/lijundacom/AndroidRTSPLib/blob/master/camera.gif)
+![image](https://github.com/lijundacom/AndroidRTSPLib2/blob/master/camera.gif)
+
 
 六、参考
 
