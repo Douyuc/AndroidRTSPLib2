@@ -1,12 +1,14 @@
 
 一、这是一个基于Android平台的RTSP直播、点播服务器。
     需要Android版本5.0以上。低于5.0的Android设备不能正常使用。
-    在 Google Nexus 9 上测试，运行正常。
-    
+    在 Google Nexus 9 上测试。
+    
     完善了AndroidRTSPLib的功能，修复了AndroidRTSPLib的若干bug。
     
     AndroidRTSPLib不再维护，以后只维护AndroidRTSPLib2.
-
+    
+    目前，这个软件依然存在部分BUG，比如连接不够稳定，资源释放不干净等。此软件仅用于学习参考。不建议实际使用。
+    
 二、实现三个功能：
 
     1、将屏幕图像实时推流
