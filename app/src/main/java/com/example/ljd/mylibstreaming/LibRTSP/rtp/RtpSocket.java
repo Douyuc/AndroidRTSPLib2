@@ -257,7 +257,7 @@ public class RtpSocket implements Runnable{
                         delta = 0;
                     }
                 }
-                mReport.update(mPackets[mBufferOut].getLength(), (mTimestamps[mBufferOut]/100L)*(mClock/1000L)/10000L);
+                mReport.update(mPackets[mBufferOut].getLength(), (mTimestamps[mBufferOut]/100L)*(mClock/1000L)/10000L);//rtcp发送
                 mOldTimestamp = mTimestamps[mBufferOut];
                 if (mCount++>30) {
                     //Log.v(TAG,"mSocket.send(mPackets[mBufferOut]);");
