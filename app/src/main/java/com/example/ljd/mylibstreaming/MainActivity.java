@@ -99,12 +99,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void InitUI(){
         tbtScreenCaptureService = (ToggleButton) findViewById(R.id.tbt_screen_capture_service);
+
+
+
+    }
+
+    private void InitCameraView(){
         camera2VideoFragment = CameraManagerFragment.getInstance();
         getFragmentManager().beginTransaction()
-                    .replace(R.id.container,camera2VideoFragment )
-                    .commit();
-
-
+                .replace(R.id.container,camera2VideoFragment )
+                .commit();
     }
 
     private void UIListener(){
@@ -140,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
         }
         mMediaProjection = mMediaProjectionManager.getMediaProjection(resultCode,data);
         session.setMediaProjection(mMediaProjection);
+        InitCameraView();
     }
     private void AskForPermission(){
         if (Build.VERSION.SDK_INT >= 23) {
@@ -204,8 +209,8 @@ public class MainActivity extends AppCompatActivity {
         WindowManager mWindowManager = (WindowManager)getApplication().getSystemService(getApplication().WINDOW_SERVICE);
         mWindowManager.getDefaultDisplay().getMetrics(metrics);
         mScreenDensity = metrics.densityDpi;
-        mScreenWidth = metrics.widthPixels/2;
-        mScreenHeight = metrics.heightPixels/2;
+        mScreenWidth = metrics.widthPixels;
+        mScreenHeight = metrics.heightPixels;
         //mScreenWidth = 1024;
         //mScreenHeight = 768;
         Log.v(TAG,"mScreenWidth is :"+mScreenWidth+";mScreenHeight is :"+mScreenHeight+"mScreenDensity is :"+mScreenDensity);
